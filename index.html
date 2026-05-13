@@ -854,8 +854,7 @@
       return;
     }
     const total = calcTotal();
-    const url = 'https://www.bitpay.co.il/app/me/D0C4AE40-6CF5-697D-DDC4-7B6C45BFA6080FE7?amount=' + total;
-    window.open(url, '_blank');
+    window.open('https://www.bitpay.co.il/app/me/D0C4AE40-6CF5-697D-DDC4-7B6C45BFA6080FE7', '_blank');
     document.getElementById('payment-confirm').classList.add('visible');
     updateButtonStates();
   }
