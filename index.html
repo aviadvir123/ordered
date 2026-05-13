@@ -64,14 +64,14 @@
     font-weight: 700;
     color: var(--brown-dark);
     line-height: 1.3;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.25rem;
   }
 
   .header .cafe-name {
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--brown-mid);
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.75rem;
   }
 
   .header .cafe-addr {
@@ -119,11 +119,11 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-hint);
-    margin: 0 0 0.75rem;
+    margin: 0 0 0.6rem;
   }
 
   /* ITEM CARDS */
-  .items-list { margin-bottom: 2rem; }
+  .items-list { margin-bottom: 1.5rem; }
 
   .item-card {
     background: var(--warm-white);
@@ -264,7 +264,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 1.25rem 1.1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   .field { margin-bottom: 1rem; }
@@ -571,6 +571,40 @@
     height: 17px;
     fill: currentColor;
   }
+
+  .pickup-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .pickup-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .pickup-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .pickup-title {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 2px;
+  }
+  .pickup-hours {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .pickup-deadline {
+    font-size: 0.78rem;
+    color: var(--text-hint);
+    margin: 0;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
 </style>
 </head>
 <body>
@@ -579,35 +613,23 @@
   <header class="header">
     <span class="logo-mark">🌾</span>
     <h1>מאפים נהדרים לקחת הביתה</h1>
-    <p class="cafe-name">בית קפה עמלי, קרית טבעון</p>
-    <p class="cafe-addr">כיכר בן גוריון 1</p>
+    <p class="cafe-name">קפה עמלי</p>
     <span class="kosher-badge">✦ הכל חלבי בהשגחת צהר</span>
   </header>
 
-  <div class="info-banner">
-    <div class="info-row">
-      <span class="info-icon">⏰</span>
+  <div class="pickup-card">
+    <div class="pickup-main">
+      <span class="pickup-icon">📦</span>
       <div>
-        <span class="info-label">סגירת הזמנות</span>
-        <span class="info-value">יום שני 19.5 בשעה 12:00</span>
+        <span class="pickup-title">איסוף ביום חמישי 21.5 (ערב חג שבועות)</span>
+        <span class="pickup-hours">08:00–14:00 | בית קפה עמלי, כיכר בן גוריון 1</span>
       </div>
     </div>
-    <div class="info-divider"></div>
-    <div class="info-row">
-      <span class="info-icon">📦</span>
-      <div>
-        <span class="info-label">איסוף</span>
-        <span class="info-value">יום חמישי 21.5 (ערב חג שבועות) בין 08:00–14:00</span>
-      </div>
+    <p class="pickup-deadline">⏰ ההזמנות נסגרות ב-19.5 בשעה 12:00</p>
+  </div>
+
     </div>
-    <div class="info-divider"></div>
-    <div class="info-row">
-      <span class="info-icon">📍</span>
-      <div>
-        <span class="info-label">מיקום</span>
-        <span class="info-value">בית קפה עמלי, כיכר בן גוריון 1, קרית טבעון</span>
-      </div>
-    </div>
+
   </div>
 
   <p class="section-label">בחר/י את ההזמנה שלך ❤️</p>
@@ -617,8 +639,8 @@
     <div class="item-card" id="card-challah">
       <div class="item-row">
         <div class="item-info">
-          <p class="item-name">זוג חלות</p>
-          <p class="item-price">25 ₪ לזוג</p>
+          <p class="item-name">חלה</p>
+          <p class="item-price">25 ₪ ליחידה</p>
         </div>
         <div class="qty-wrap">
           <button class="qty-btn" onclick="changeQty('challah',-1)" aria-label="הפחת">−</button>
@@ -760,7 +782,7 @@
   const BIT_PHONE  = '0505972008';
 
   const ITEMS = {
-    challah:  { name: 'זוג חלות',                  price: 25  },
+    challah:  { name: 'חלה',                  price: 25  },
     scones:   { name: "5 סקונס צ'דר ובצל ירוק",   price: 65  },
     eclair6:  { name: '6 פחזניות',                  price: 90  },
     eclair10: { name: '10 פחזניות',                 price: 120 },
@@ -875,7 +897,7 @@
 
   function buildOrder() {
     const parts = [];
-    if (qty.challah  > 0) parts.push(qty.challah  + ' × זוג חלות');
+    if (qty.challah  > 0) parts.push(qty.challah  + ' × חלה');
     if (qty.scones   > 0) parts.push(qty.scones   + ' × 5 סקונס');
     if (qty.eclair6  > 0) parts.push(qty.eclair6  + ' × 6 פחזניות');
     if (qty.eclair10 > 0) parts.push(qty.eclair10 + ' × 10 פחזניות');
