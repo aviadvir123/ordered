@@ -623,6 +623,7 @@
     document.getElementById('btn-bit').classList.toggle('visible', hasItems);
     document.getElementById('bit-sub').classList.toggle('visible', hasItems);
     document.getElementById('empty-warn').classList.remove('visible');
+    updateButtonStates();
     let html = '';
     Object.keys(qty).forEach(k => {
       if (qty[k] > 0) {
@@ -637,11 +638,43 @@
     document.getElementById('total-price').textContent = total + ' ₪';
   }
 
+  function updateButtonStates() {
+    const ready = validateSilent();
+    document.getElementById('btn-bit').style.opacity = ready ? '1' : '0.4';
+    document.getElementById('btn-submit').disabled = !ready;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    ['fname','fphone','fnotes'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateButtonStates);
+    });
+  });
+
   function openBit() {
+    if (!validateSilent()) {
+      validate();
+      return;
+    }
     const total = calcTotal();
-    if (!total) return;
+    const phone = BIT_PHONE.replace(/\D/g, '');
     const msg = encodeURIComponent('תשלום הזמנת מאפים – ' + total + ' ₪');
-    window.open('https://bitpay.co.il/app/payment?phone=' + BIT_PHONE + '&amount=' + total + '&message=' + msg, '_blank');
+    const deepLink = 'bit://pay?to=' + phone + '&amount=' + total + '&note=' + msg;
+    const fallback = 'https://www.bitpay.co.il/send-money?to=' + phone + '&amount=' + total;
+    const a = document.createElement('a');
+    a.href = deepLink;
+    a.click();
+    setTimeout(() => { window.open(fallback, '_blank'); }, 1500);
+  }
+
+  function validateSilent() {
+    const hasItems = Object.values(qty).some(v => v > 0);
+    if (!hasItems) return false;
+    if (qty.eclair6 + qty.eclair10 > 0 && !flavor) return false;
+    const name = document.getElementById('fname').value.trim();
+    if (!name) return false;
+    const phone = document.getElementById('fphone').value.trim();
+    if (!phone || phone.length < 9) return false;
+    return true;
   }
 
   function validate() {
