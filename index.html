@@ -605,6 +605,66 @@
     padding-top: 8px;
     border-top: 1px solid var(--border);
   }
+
+  .payment-title {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+  .payment-options {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+  .pay-opt {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 6px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--warm-white);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Heebo', sans-serif;
+  }
+  .pay-opt:hover { border-color: var(--brown-light); }
+  .pay-opt.active {
+    border-color: var(--brown-light);
+    background: var(--green-light);
+  }
+  .pay-opt-icon { font-size: 1.3rem; }
+  .pay-opt-label { font-size: 0.8rem; color: var(--text-main); font-weight: 500; }
+  .pay-link-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'Heebo', sans-serif;
+    text-decoration: none;
+    margin-bottom: 10px;
+    color: white;
+  }
+  .pay-link-bit { background: #0BBF69; }
+  .pay-link-bit:hover { opacity: 0.88; }
+  .cash-note {
+    background: var(--green-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .cash-note p { margin-bottom: 4px; }
+  .cash-note p:last-child { margin-bottom: 0; }
 </style>
 </head>
 <body>
@@ -732,16 +792,39 @@
 
   <p class="empty-warn" id="empty-warn">יש לבחור לפחות פריט אחד</p>
 
-  <button class="btn-bit" id="btn-bit" onclick="openBit()">
-    💚 שלם/י עכשיו בביט
-  </button>
+  <div id="payment-section" style="display:none;">
+    <p class="payment-title">בחר/י אופן תשלום</p>
+    <div class="payment-options">
+      <button class="pay-opt" id="opt-bit" onclick="selectPayment('bit')">
+        <span class="pay-opt-icon">💚</span>
+        <span class="pay-opt-label">ביט</span>
+      </button>
+      <button class="pay-opt" id="opt-cash" onclick="selectPayment('cash')">
+        <span class="pay-opt-icon">💵</span>
+        <span class="pay-opt-label">תשלום באיסוף</span>
+      </button>
+    </div>
 
-  <div class="payment-confirm" id="payment-confirm">
-    <label class="confirm-label">
-      <input type="checkbox" id="payment-done" onchange="updateButtonStates()">
-      <span>שילמתי בביט ✓</span>
-    </label>
-    <p class="screenshot-note">יש להגיע לאיסוף עם צילום מסך של אישור התשלום מביט</p>
+    <div id="pay-bit-area" style="display:none;">
+      <a class="pay-link-btn pay-link-bit" href="https://www.bitpay.co.il/app/me/D0C4AE40-6CF5-697D-DDC4-7B6C45BFA6080FE7" target="_blank" onclick="onPayLinkClick()">
+        פתח/י ביט לתשלום
+      </a>
+      <div class="payment-confirm" id="payment-confirm-bit">
+        <label class="confirm-label">
+          <input type="checkbox" id="payment-done" onchange="updateButtonStates()">
+          <span>שילמתי בביט ✓</span>
+        </label>
+        <p class="screenshot-note">יש להגיע לאיסוף עם צילום מסך של אישור התשלום</p>
+      </div>
+    </div>
+
+
+    <div id="pay-cash-area" style="display:none;">
+      <div class="cash-note">
+        <p>ניצור איתך קשר לפני האיסוף לאישור ההזמנה.</p>
+        <p>התשלום יתבצע במזומן או בכרטיס בזמן האיסוף.</p>
+      </div>
+    </div>
   </div>
 
   <button class="btn-submit" id="btn-submit" onclick="submitOrder()">שלח/י הזמנה</button>
@@ -855,8 +938,24 @@
     }
     const total = calcTotal();
     window.open('https://www.bitpay.co.il/app/me/D0C4AE40-6CF5-697D-DDC4-7B6C45BFA6080FE7', '_blank');
-    document.getElementById('payment-confirm').classList.add('visible');
+
     updateButtonStates();
+  }
+
+  let selectedPayment = '';
+
+  function selectPayment(method) {
+    selectedPayment = method;
+    ['bit','cash'].forEach(m => {
+      document.getElementById('opt-' + m).classList.toggle('active', m === method);
+      document.getElementById('pay-' + m + '-area').style.display = m === method ? 'block' : 'none';
+    });
+    if (method !== 'bit') document.getElementById('payment-done').checked = false;
+    updateButtonStates();
+  }
+
+  function onPayLinkClick() {
+    setTimeout(updateButtonStates, 500);
   }
 
   function validateSilent(skipPayment) {
@@ -868,8 +967,8 @@
     const phone = document.getElementById('fphone').value.trim();
     if (!phone || phone.length < 9) return false;
     if (!skipPayment) {
-      const paid = document.getElementById('payment-done').checked;
-      if (!paid) return false;
+      if (!selectedPayment) return false;
+      if (selectedPayment === 'bit' && !document.getElementById('payment-done').checked) return false;
     }
     return true;
   }
@@ -910,6 +1009,7 @@
     btn.disabled = true;
     btn.textContent = 'שולח...';
 
+    const paymentLabel = selectedPayment === 'bit' ? 'ביט' : 'תשלום באיסוף';
     const data = {
       timestamp: new Date().toLocaleString('he-IL'),
       name:      document.getElementById('fname').value.trim(),
@@ -922,6 +1022,7 @@
       order:     buildOrder(),
       total:     calcTotal(),
       notes:     document.getElementById('fnotes').value.trim(),
+      payment:   paymentLabel,
     };
 
     try {
