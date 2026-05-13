@@ -531,7 +531,7 @@
 
   <div class="deadline-banner">
     <span>⏰</span>
-    <span>ההזמנות פתוחות עד יום ראשון 12.5 בשעה 12:00</span>
+    <span>ההזמנות פתוחות עד יום שני 19.5 בשעה 12:00</span>
   </div>
 
   <p class="section-label">בחר/י את ההזמנה שלך</p>
@@ -658,14 +658,14 @@
 
 <script>
   // Deadline: 12 May 2025, 12:00 Israel time (UTC+3)
-  const DEADLINE = new Date('2025-05-12T09:00:00Z');
+  const DEADLINE = new Date('2025-05-19T09:00:00Z');
   const now = new Date();
   if (now > DEADLINE) {
     document.querySelector('.page-wrap').innerHTML = `
       <div class="form-closed">
         <span class="closed-icon">🌾</span>
         <h2>ההזמנות נסגרו</h2>
-        <p>ההזמנות לחג השבועות נסגרו ב-12.5 בשעה 12:00.<br>נתראה בפעם הבאה!</p>
+        <p>ההזמנות לחג השבועות נסגרו ב-19.5 בשעה 12:00.<br>נתראה בפעם הבאה!</p>
       </div>`;
   }
 
