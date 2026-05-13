@@ -901,8 +901,7 @@
     const total    = calcTotal();
     const hasItems = Object.values(qty).some(v => v > 0);
     document.getElementById('summary-box').classList.toggle('visible', hasItems);
-    document.getElementById('btn-bit').classList.toggle('visible', hasItems);
-    // bit-sub removed
+    document.getElementById('payment-section').style.display = hasItems ? 'block' : 'none';
     document.getElementById('empty-warn').classList.remove('visible');
     updateButtonStates();
     let html = '';
@@ -921,7 +920,6 @@
 
   function updateButtonStates() {
     const ready = validateSilent();
-    document.getElementById('btn-bit').style.opacity = ready ? '1' : '0.4';
     document.getElementById('btn-submit').disabled = !ready;
   }
 
@@ -1034,7 +1032,7 @@
       });
       document.getElementById('success-wrap').classList.add('visible');
       document.getElementById('btn-submit').style.display   = 'none';
-      document.getElementById('btn-bit').classList.remove('visible');
+      document.getElementById('payment-section').style.display = 'none';
       // bit-sub removed
       document.getElementById('summary-box').classList.remove('visible');
     } catch (e) {
