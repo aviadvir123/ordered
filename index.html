@@ -875,7 +875,7 @@
   let   flavor = '';
 
   function changeQty(key, delta) {
-    qty[key] = Math.min(3, Math.max(0, qty[key] + delta));
+    qty[key] = Math.max(0, qty[key] + delta);
     document.getElementById('qty-' + key).textContent = qty[key];
     const card = document.getElementById('card-' + (key.startsWith('eclair') ? 'eclair' : key));
     if (card) card.classList.toggle('has-qty', qty[key] > 0);
